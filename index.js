@@ -1,5 +1,8 @@
 import express from 'express';
+import cors from 'cors';
 const app = express();
+app.use(cors());
+app.use(express.json());
 const PORT = process.env.PORT || 5001;
 
 app.get('/', (req, res) => {
@@ -38,6 +41,22 @@ app.get('/users/:id', (req, res) => {
     } else {
         res.status(404).json({ message: 'User not found' });
     }
+});
+
+app.post('/users', (req, res) => {
+    const { name, email } = req.body ?? {};
+    if (typeof name !== 'string' || !name.trim() ||
+        typeof email !== 'string' || !email.trim()) {
+        return res.status(400).json({ message: 'Name and email are required' });
+    }
+
+    const newUser = {
+        id: users.length + 1,
+        name: name.trim(),
+        email: email.trim()
+    };
+    users.push(newUser);
+    res.status(201).json(newUser);
 });
 
 app.listen(PORT, () => {
